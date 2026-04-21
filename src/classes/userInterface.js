@@ -27,7 +27,7 @@ class UI {
         
         body.appendChild(this.grid)
         const testOmega = new OmegaTetromino(4); 
-        const testIota = new IotaTetromino(6); 
+        const testIota = new IotaTetromino(1); 
         this.drawTetromino(testIota); 
         
     } 
@@ -40,9 +40,21 @@ class UI {
         shapeContainer.style.gridTemplateRows = `repeat(${tetromino.shape.length}, ${this.cellSize}px)`; 
         shapeContainer.style.position = "absolute"; 
 
-        shapeContainer.style.setProperty("--start", `${0}px`);
-        const endAnimationPosition = (this.cellSize * this.rows) - (this.cellSize * (tetromino.shape.length) );
-        shapeContainer.style.setProperty("--end", `${endAnimationPosition}px`);
+        const endAnimationPosition = (this.rows - (tetromino.shape.length));
+
+        console.log(`end vertical position: ${endAnimationPosition}`)
+
+        /* 
+            this 2 will represent the number of cells below the falling piece in a particular column
+            Will change upon every horizontal input. fn getOccupiedCells(column) => number. Will call
+            in the event listener. The fall animation fn will need to accept a new endPosition upon every
+            input event
+        */
+
+
+        /* 
+        This end position can be recalculated upon every horizontal input event
+        */
         
         tetromino.shape.forEach((row, rowIndex) => {
             row.forEach((cell, columnIndex) => {
@@ -58,7 +70,6 @@ class UI {
             })
         })
         
-        // positioning logic:
         // shapeContainer.classList.add("outline");
         let leftShiftMultiplier = 0;
 
@@ -96,17 +107,25 @@ class UI {
         shapeContainer.classList.add('outline');
         this.grid.appendChild(shapeContainer); 
 
-        // eventually move this to its own method
+        const playAnimation = true; 
 
-        shapeContainer.style.animation = '5s steps(16, jump-none) 2s 1 fall';
- 
-        // shapeContainer.style.animationPlayState = "paused"; 
+        let verticalPosition = 0;
 
-        shapeContainer.onanimationend = (e) => {
-            if(e.animationName === "fall") {
-                shapeContainer.style.top = `${(this.rows- tetromino.shape.length) * this.cellSize}px`; 
-                console.log(`left property value: ${shapeContainer.style.left}`);
-            }
+        if(playAnimation) {
+            setTimeout(() => {
+                    const animation = setInterval(() =>  {
+                        verticalPosition += 1; 
+                        shapeContainer.style.top = `${verticalPosition * this.cellSize}px`
+    
+                        if(verticalPosition === endAnimationPosition) {
+                            /* this point I can call gameBoard.placeTetromino */
+                            const horizontalPosition = (leftShiftMultiplier * -1 ) + horizontalMove
+                            console.log(`horizontal: ${horizontalPosition}\nvertical: ${verticalPosition}`)
+                            /* remove the eventListener from the shapeContainer*/
+                            clearInterval(animation)
+                        }
+                    }, 500)
+            }, 2000)
         }
 
         document.addEventListener('keydown' , (e) => {
@@ -126,7 +145,7 @@ class UI {
                     }
                 }
             }
-            shapeContainer.style.left = `${leftOrigin + (horizontalMove * this.cellSize) }px`
+            shapeContainer.style.left = `${leftOrigin + (horizontalMove * this.cellSize) }px`;
 
         })
 
