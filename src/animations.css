@@ -15,13 +15,3 @@
     }
 }
 
-@keyframes horizontal {
-    /* from {
-        transform: translateX(var(--start-left));
-    } */
-
-    to {
-        transform: translateX(var(--end-left));
-    }
-
-}
