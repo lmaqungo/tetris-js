@@ -1,0 +1,27 @@
+:root{
+    --end: 0px;
+    --start: 0px; 
+    --start-left: 0px; 
+    --end-left: 0px;
+}
+
+@keyframes fall {
+    from {
+        transform: translateY(var(--start));
+    }
+
+  to {
+        transform: translateY(var(--end));
+    }
+}
+
+@keyframes horizontal {
+    /* from {
+        transform: translateX(var(--start-left));
+    } */
+
+    to {
+        transform: translateX(var(--end-left));
+    }
+
+}
