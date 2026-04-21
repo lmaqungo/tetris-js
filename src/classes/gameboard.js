@@ -1,4 +1,5 @@
-import OmegaTetromino from "./classes/tetromino/omegaTetromino.js"
+import OmegaTetromino from "./tetromino/omegaTetromino.js"
+import IotaTetromino from "./tetromino/iotaTetromino.js";
 
 class GameBoard {
     grid = []; 
@@ -55,18 +56,13 @@ class GameBoard {
     }
 
     placeTetromino(rowCoord, columnCoord, tetrominoShape) {
-        if(this.isQuadrantEmpty(rowCoord, columnCoord, tetrominoShape)) {
-            tetrominoShape.forEach((row, rowIndex) => {
-                row.forEach((cell, columnIndex) => {
-                    this.grid[(rowCoord - 1) + rowIndex][(columnCoord - 1) + columnIndex] = cell
-                })
+        tetrominoShape.forEach((row, rowIndex) => {
+            row.forEach((cell, columnIndex) => {
+                if(cell > 0) {
+                    this.grid[(rowCoord) + rowIndex][(columnCoord) + columnIndex] = cell
+                }
             })
-
-            return true
-        } else{
-            console.log("You can't place it here!")
-            return false
-        }
+        })
     }
 
     isQuadrantEmpty(rowCoord, columnCoord, tetrominoShape) {
@@ -143,6 +139,7 @@ class GameBoard {
     }
 
 }
+
 
 export default GameBoard
 

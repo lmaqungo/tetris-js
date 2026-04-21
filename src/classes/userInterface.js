@@ -41,9 +41,9 @@ class UI {
         shapeContainer.style.position = "absolute"; 
 
         shapeContainer.style.setProperty("--start", `${0}px`);
-        const endAnimationPosition = (this.cellSize * this.rows) - (this.cellSize * (tetromino.shape.length));
+        const endAnimationPosition = (this.cellSize * this.rows) - (this.cellSize * (tetromino.shape.length) );
         shapeContainer.style.setProperty("--end", `${endAnimationPosition}px`);
-
+        
         tetromino.shape.forEach((row, rowIndex) => {
             row.forEach((cell, columnIndex) => {
                 if(cell > 0) {
