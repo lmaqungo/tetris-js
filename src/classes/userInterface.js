@@ -8,7 +8,6 @@ class UI {
     grid;  
     horizontalMove = 0;  
     shapeContainer;  
-    fallingTetro= false;
     
     constructor(cellSize=24, columns=10, rows=20) {
         this.cellSize = cellSize; 
@@ -72,7 +71,7 @@ class UI {
             })
         })
 
-        // shapeContainer.classList.add("outline");
+        
         let leftShiftMultiplier = 0;
 
         /* 
@@ -111,34 +110,34 @@ class UI {
 
         let verticalPosition = 0;
 
-        document.addEventListener('keydown', this)
-
         if(playAnimation) {
-
-            setTimeout(() => {
-                    const animation = setInterval(() =>  {
+            
+            return new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    try {
+                        document.addEventListener('keydown', this)
+                        const animation = setInterval(() =>  {
                         verticalPosition += 1; 
                         this.shapeContainer.style.top = `${verticalPosition * this.cellSize}px`; 
 
                         if(verticalPosition === endAnimationPosition) {
-                            /* this point I can call gameBoard.placeTetromino */  
+                              
                             const horizontalPosition = (leftShiftMultiplier * -1 ) + this.horizontalMove
-                            console.log(`horizontal: ${horizontalPosition} \nvertical: ${verticalPosition}`)
-                            /* remove the eventListener from the shapeContainer*/  
+                            // console.log(`horizontal: ${horizontalPosition} \nvertical: ${verticalPosition}`)
+                              
                             document.removeEventListener('keydown', this)
-                            this.fallingTetro = false;
+                            
+                            resolve([horizontalPosition, verticalPosition])
 
-                            
-                            // this.drawTetromino()
-                            
-                            /*
-                            
-                                recursion works amazingly, maybe that is the way forward? Only making the new call after a setTimeOut and other conditions satisfied? 
-                            */
+                        
                             clearInterval(animation)
                         }
-                    }, 500)
-            }, 2000)
+                        }, 500)
+                    } catch(err) {
+                        reject(err)
+                    }
+                }, 2000)
+            })
         }
     }
 
@@ -161,7 +160,7 @@ class UI {
                     }
                 }
                 this.shapeContainer.style.left = `${-24 + (this.horizontalMove * this.cellSize) }px`;
-                console.log(`horizontal move: ${this.horizontalMove}`)
+                // console.log(`horizontal move: ${this.horizontalMove}`)
             }
         }
     }
