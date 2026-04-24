@@ -1,11 +1,18 @@
 import UI from "./classes/userInterface.js";
 import "./styles.css";
-import IotaTetromino from "./classes/tetromino/iotaTetromino.js";
 
 const ui = new UI();
-const testIota = new IotaTetromino(2); 
 
-let iterationCount = 0
+async function run() {
+    console.log('start game')
+    for(let i = 0; i < 5; i++) {
+        const coordinates = await ui.drawTetromino()
+        console.log(`coordinates: ${coordinates}`)
+    }
+    console.log('end game')
+}; 
+
+run();
 
 
 
