@@ -63,6 +63,7 @@ class GameBoard {
                 }
             })
         })
+        console.log(this.toString())
     }
 
     isQuadrantEmpty(rowCoord, columnCoord, tetrominoShape) {
@@ -71,6 +72,11 @@ class GameBoard {
                 return this.grid[(rowCoord - 1) + rowIndex][(columnCoord - 1) + columnIndex] === 0
             })
         })
+    }
+
+    getTetromino() {
+        const color = Math.floor(Math.random() * 6) + 1;
+        return new IotaTetromino(color)
     }
 
     checkFilledRows(){

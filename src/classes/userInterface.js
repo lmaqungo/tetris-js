@@ -1,5 +1,3 @@
-import OmegaTetromino from "./tetromino/omegaTetromino.js";
-import IotaTetromino from "./tetromino/iotaTetromino.js";
 
 class UI {
     cellSize;  
@@ -9,7 +7,7 @@ class UI {
     horizontalMove = 0;  
     shapeContainer;  
     
-    constructor(cellSize=24, columns=10, rows=20) {
+    constructor(columns=10, rows=20, cellSize=24, ) {
         this.cellSize = cellSize; 
         this.rows = rows; 
         this.columns = columns; 
@@ -29,10 +27,8 @@ class UI {
         body.appendChild(this.grid)
     } 
 
-    drawTetromino() {
-        this.fallingTetro = true;
-        const tetromino = this.generateTetro()
-
+    drawTetromino(tetromino) {
+    
         this.horizontalMove = 0; 
         this.shapeContainer = document.createElement('div'); 
         
@@ -127,9 +123,13 @@ class UI {
                               
                             document.removeEventListener('keydown', this)
                             
-                            resolve([horizontalPosition, verticalPosition])
-
-                        
+                            resolve(
+                                {
+                                    column: horizontalPosition,
+                                    row: verticalPosition
+                                }
+                            )
+                            
                             clearInterval(animation)
                         }
                         }, 500)
@@ -163,11 +163,6 @@ class UI {
                 // console.log(`horizontal move: ${this.horizontalMove}`)
             }
         }
-    }
-
-    generateTetro() {
-        const color = Math.floor(Math.random() * 6) + 1;
-        return new IotaTetromino(color)
     }
 
     getCellColor(colorId) {
