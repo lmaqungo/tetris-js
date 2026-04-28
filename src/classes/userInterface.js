@@ -4,8 +4,17 @@ class UI {
     rows;  
     columns;  
     grid;  
-    horizontalMove = 0;  
+    horizontalMove;  
     shapeContainer;  
+    verticalPosition;
+    leftShiftMultiplier;
+
+    tetromino; 
+    gameBoard;
+    /*
+        rename the properties by prepending a prefix that denotes if it belongs to the grid or the shapeContainer. 
+        The shapeContainer properties will reset after every drawTetro fn call
+    */
     
     constructor(columns=10, rows=20, cellSize=24, ) {
         this.cellSize = cellSize; 
@@ -28,7 +37,10 @@ class UI {
     } 
 
     drawTetromino(tetromino, gameBoard) {
-    
+
+        this.tetromino = tetromino; 
+        this.gameBoard = gameBoard;
+
         this.horizontalMove = 0; 
         this.shapeContainer = document.createElement('div'); 
         
@@ -38,20 +50,6 @@ class UI {
         this.shapeContainer.style.position = "absolute"; 
         this.shapeContainer.style.left = `0px`;
 
-        const endAnimationPosition = (this.rows - (tetromino.shape.length));
-
-        console.log(`end vertical position: ${endAnimationPosition}`);
-
-        /* 
-            this 2 will represent the number of cells below the falling piece in a particular column
-            Will change upon every horizontal input. fn getOccupiedCells(column) => number. Will call
-            in the event listener. The fall animation fn will need to accept a new endPosition upon every
-            input event
-        */
-
-        /* 
-        This end position can be recalculated upon every horizontal input event
-        */
         
         tetromino.shape.forEach((row, rowIndex) => {
             row.forEach((cell, columnIndex) => {
@@ -67,8 +65,7 @@ class UI {
             })
         })
 
-        
-        let leftShiftMultiplier = 0;
+        this.leftShiftMultiplier = 0;
 
         /* 
             iterate through the rows of the tetromino 2d array
@@ -83,13 +80,13 @@ class UI {
                 column.push(row[colIndex])
             })
             if(column.every(element => element === 0)) {
-                leftShiftMultiplier += 1
+                this.leftShiftMultiplier += 1
             } else if(column.every(element => element !== 0)) {
                 break
             }
         }
 
-        const leftOrigin = (this.cellSize * leftShiftMultiplier) * -1
+        const leftOrigin = (this.cellSize * this.leftShiftMultiplier) * -1;
 
         this.shapeContainer.style.left = `${leftOrigin}px`;
 
@@ -104,10 +101,8 @@ class UI {
 
         const playAnimation = true; 
 
-        let verticalPosition = 0;
+        this.verticalPosition = 0;
 
-        
-        
         if(playAnimation) {
             
             return new Promise((resolve, reject) => {
@@ -115,24 +110,24 @@ class UI {
                     try {
                         document.addEventListener('keydown', this)
                         const animation = setInterval(() =>  {
-                            verticalPosition += 1; 
-                            this.shapeContainer.style.top = `${verticalPosition * this.cellSize}px`; 
-                            const nextCellRow = verticalPosition + tetromino.shape.length + 1; 
+                            this.verticalPosition += 1; 
+                            this.shapeContainer.style.top = `${this.verticalPosition * this.cellSize}px`; 
+                            const nextCellRow = this.verticalPosition + tetromino.shape.length + 1; 
 
                             if(nextCellRow < this.rows) {
-                                console.log(`next cell row: ${nextCellRow}`)
-                                console.log(`cell column: ${this.horizontalMove}`)
+                                // console.log(`next cell row: ${nextCellRow}`)
+                                // console.log(`cell column: ${this.horizontalMove}`)
                                 const nextCell = gameBoard.grid[nextCellRow-1][this.horizontalMove]
                                 if(nextCell > 0) {
 
-                                    const horizontalPosition = (leftShiftMultiplier * -1 ) + this.horizontalMove
+                                    const horizontalPosition = (this.leftShiftMultiplier * -1 ) + this.horizontalMove
                                     document.removeEventListener('keydown', this)
                                     clearInterval(animation)
 
                                     resolve(
                                         {
                                             column: horizontalPosition,
-                                            row: verticalPosition
+                                            row: this.verticalPosition
                                         }
                                     )
                                 }
@@ -140,14 +135,14 @@ class UI {
                             
                             if(nextCellRow > this.rows) {
                                 
-                                const horizontalPosition = (leftShiftMultiplier * -1 ) + this.horizontalMove
+                                const horizontalPosition = (this.leftShiftMultiplier * -1 ) + this.horizontalMove
                               
                                 document.removeEventListener('keydown', this)
                                 
                                 resolve(
                                     {
                                         column: horizontalPosition,
-                                        row: verticalPosition
+                                        row: this.verticalPosition
                                     }
                                 )
                                 
@@ -170,18 +165,52 @@ class UI {
         if(e.type === 'keydown'){
             if (!e.repeat) {
                 if(e.key === "ArrowLeft"){
-                    console.log('left arrow clicked')
+                    // console.log('left arrow clicked')
+                    // checks if we're clicking past the left boundary
                     if(this.horizontalMove > 0) {
-                        this.horizontalMove -= 1; 
+                        /* 
+                            if we're within the left boundary and there isn't a cell already on the gameBoard to the left of the bottom cell(s) then you can move to the left
+                        */
+                        
+                        // bottom cell of tetromino
+                        const bottomCellVerticalPosition = this.verticalPosition + this.tetromino.shape.length - 1;
+                        const leftCell = this.gameBoard.grid[bottomCellVerticalPosition][this.horizontalMove - 1]; 
+                        /* 
+                            -1 to look for the cell to the left
+                        */
+
+                         
+                        if(leftCell === 0) {
+                            this.horizontalMove -= 1; 
+                        }
                     }
                 } else if(e.key === "ArrowRight") {
-                    console.log('right arrow clicked')
+                    // console.log('right arrow clicked')
+                    // checks if we're clicking past the right boundary
                     if(this.horizontalMove < this.columns - 1) {
-                        this.horizontalMove += 1
+
+                         /* 
+                            if we're within the right boundary and there isn't a cell already on the gameBoard to the right of the bottom cell(s) then you can move to the right
+                        */
+
+                        const bottomCellVerticalPosition = this.verticalPosition + this.tetromino.shape.length - 1;
+                        const rightCell = this.gameBoard.grid[bottomCellVerticalPosition][this.horizontalMove + 1]; 
+
+                        /* 
+                            +1 to look to the right
+                        */
+
+                        if(rightCell === 0) {
+                            this.horizontalMove += 1
+                        }
                     }
                 }
-                this.shapeContainer.style.left = `${-24 + (this.horizontalMove * this.cellSize) }px`;
-                // console.log(`horizontal move: ${this.horizontalMove}`)
+                this.shapeContainer.style.left = `${((this.leftShiftMultiplier * -1) + this.horizontalMove) * this.cellSize }px`;
+                /*
+                    I hardcoded the '-24' because I'm not able to reference the leftShiftMultiplier from the 
+                    event handler. I have to eventually make that variable an object property and this constraint is actually leading me to believe maybe I was supposed to have one class that outputs the grid and another that deals strictly with the shapeContainer, but I know as the developer that most of these properties are for the shapeContainer. You have to make all these values that need to be accessible across methods object properties. 
+                */
+
             }
         }
     }
