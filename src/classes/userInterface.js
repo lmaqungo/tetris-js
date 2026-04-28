@@ -27,7 +27,7 @@ class UI {
         body.appendChild(this.grid)
     } 
 
-    drawTetromino(tetromino) {
+    drawTetromino(tetromino, gameBoard) {
     
         this.horizontalMove = 0; 
         this.shapeContainer = document.createElement('div'); 
@@ -106,6 +106,8 @@ class UI {
 
         let verticalPosition = 0;
 
+        
+        
         if(playAnimation) {
             
             return new Promise((resolve, reject) => {
@@ -113,24 +115,43 @@ class UI {
                     try {
                         document.addEventListener('keydown', this)
                         const animation = setInterval(() =>  {
-                        verticalPosition += 1; 
-                        this.shapeContainer.style.top = `${verticalPosition * this.cellSize}px`; 
+                            verticalPosition += 1; 
+                            this.shapeContainer.style.top = `${verticalPosition * this.cellSize}px`; 
+                            const nextCellRow = verticalPosition + tetromino.shape.length + 1; 
 
-                        if(verticalPosition === endAnimationPosition) {
-                              
-                            const horizontalPosition = (leftShiftMultiplier * -1 ) + this.horizontalMove
-                            // console.log(`horizontal: ${horizontalPosition} \nvertical: ${verticalPosition}`)
-                              
-                            document.removeEventListener('keydown', this)
-                            
-                            resolve(
-                                {
-                                    column: horizontalPosition,
-                                    row: verticalPosition
+                            if(nextCellRow < this.rows) {
+                                console.log(`next cell row: ${nextCellRow}`)
+                                console.log(`cell column: ${this.horizontalMove}`)
+                                const nextCell = gameBoard.grid[nextCellRow-1][this.horizontalMove]
+                                if(nextCell > 0) {
+
+                                    const horizontalPosition = (leftShiftMultiplier * -1 ) + this.horizontalMove
+                                    document.removeEventListener('keydown', this)
+                                    clearInterval(animation)
+
+                                    resolve(
+                                        {
+                                            column: horizontalPosition,
+                                            row: verticalPosition
+                                        }
+                                    )
                                 }
-                            )
+                            } 
                             
-                            clearInterval(animation)
+                            if(nextCellRow > this.rows) {
+                                
+                                const horizontalPosition = (leftShiftMultiplier * -1 ) + this.horizontalMove
+                              
+                                document.removeEventListener('keydown', this)
+                                
+                                resolve(
+                                    {
+                                        column: horizontalPosition,
+                                        row: verticalPosition
+                                    }
+                                )
+                                
+                                clearInterval(animation)
                         }
                         }, 500)
                     } catch(err) {
@@ -156,7 +177,7 @@ class UI {
                 } else if(e.key === "ArrowRight") {
                     console.log('right arrow clicked')
                     if(this.horizontalMove < this.columns - 1) {
-                       this.horizontalMove += 1
+                        this.horizontalMove += 1
                     }
                 }
                 this.shapeContainer.style.left = `${-24 + (this.horizontalMove * this.cellSize) }px`;
