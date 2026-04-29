@@ -50,37 +50,8 @@ class UI {
         this.shapeContainer.style.position = "absolute"; 
 
         this.calculateShapeContainer()
-
-        this.leftShiftMultiplier = 0;
-
-        /*
-            iterate through the rows of the tetromino 2d array
-            keep record of each column
-            if every cell in column is equal to 0, increment shift multiplier
-            shift the horizontal offset using a multiple of the cellSize and the shift multiplier
-        */
-
-        for(let colIndex = 0; colIndex < tetromino.shape.length; colIndex++) {
-            const column = []; 
-            tetromino.shape.forEach((row) => {
-                column.push(row[colIndex])
-            })
-            if(column.every(element => element === 0)) {
-                this.leftShiftMultiplier += 1
-            } else if(column.every(element => element !== 0)) {
-                break
-            }
-        }
-
-        const leftOrigin = (this.cellSize * this.leftShiftMultiplier) * -1;
-
-        this.shapeContainer.style.left = `${leftOrigin}px`;
-
-        /* 
-            Make the middle of the grid the starting point, then set the max and min
-            of the horizontal move the negative and positive of this.columns
-            use this line: (this.columns / 2 * this.cellSize)
-        */
+        
+        this.calculateLeftShiftMultiplier()
 
         // this.shapeContainer.classList.add('outline'); 
         this.grid.appendChild(this.shapeContainer); 
@@ -166,6 +137,36 @@ class UI {
                 }
             })
         })
+    }
+
+    calculateLeftShiftMultiplier() {
+        /*
+            iterate through the rows of the tetromino 2d array
+            keep record of each column
+            if every cell in column is equal to 0, increment shift multiplier
+            shift the horizontal offset using a multiple of the cellSize and the shift multiplier
+        */
+        this.leftShiftMultiplier = 0;
+
+        for(let colIndex = 0; colIndex < this.tetromino.shape.length; colIndex++) {
+            const column = []; 
+            this.tetromino.shape.forEach((row) => {
+                column.push(row[colIndex])
+            })
+            if(column.every(element => element === 0)) {
+                this.leftShiftMultiplier += 1
+            } else if(column.every(element => element !== 0)) {
+                break
+            }
+        }
+        /* 
+            Make the middle of the grid the starting point, then set the max and min
+            of the horizontal move the negative and positive of this.columns
+            use this line: (this.columns / 2 * this.cellSize)
+        */
+        const leftOrigin = (this.cellSize * this.leftShiftMultiplier) * -1;
+
+        this.shapeContainer.style.left = `${leftOrigin}px`;
     }
 
     handleEvent(e) {
