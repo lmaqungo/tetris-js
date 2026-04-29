@@ -48,26 +48,12 @@ class UI {
         this.shapeContainer.style.gridTemplateColumns = `repeat(${tetromino.shape.length}, ${this.cellSize}px)`; 
         this.shapeContainer.style.gridTemplateRows = `repeat(${tetromino.shape.length}, ${this.cellSize}px)`; 
         this.shapeContainer.style.position = "absolute"; 
-        this.shapeContainer.style.left = `0px`;
 
-        
-        tetromino.shape.forEach((row, rowIndex) => {
-            row.forEach((cell, columnIndex) => {
-                if(cell > 0) {
-                    const cellElement = document.createElement('div'); 
-                    cellElement.classList.add(this.getCellColor(cell));
-                    cellElement.style.gridRowStart = `${rowIndex + 1}`; 
-                    cellElement.style.gridRowEnd = `${rowIndex + 2}`;
-                    cellElement.style.gridColumnStart = `${columnIndex + 1}`;
-                    cellElement.style.gridColumnEnd = `${columnIndex + 2}`;
-                    this.shapeContainer.appendChild(cellElement);
-                }
-            })
-        })
+        this.calculateShapeContainer()
 
         this.leftShiftMultiplier = 0;
 
-        /* 
+        /*
             iterate through the rows of the tetromino 2d array
             keep record of each column
             if every cell in column is equal to 0, increment shift multiplier
@@ -159,6 +145,27 @@ class UI {
 
     tetrominoVerticalAnimation(tetrominoContainer) {
         return
+    }
+
+    calculateShapeContainer() {
+        const divs = this.shapeContainer.querySelectorAll('div'); 
+        if(divs.length > 0) {
+            this.shapeContainer.removeChildren()
+        }
+
+        this.tetromino.shape.forEach((row, rowIndex) => {
+            row.forEach((cell, columnIndex) => {
+                if(cell > 0) {
+                    const cellElement = document.createElement('div'); 
+                    cellElement.classList.add(this.getCellColor(cell));
+                    cellElement.style.gridRowStart = `${rowIndex + 1}`; 
+                    cellElement.style.gridRowEnd = `${rowIndex + 2}`;
+                    cellElement.style.gridColumnStart = `${columnIndex + 1}`;
+                    cellElement.style.gridColumnEnd = `${columnIndex + 2}`;
+                    this.shapeContainer.appendChild(cellElement);
+                }
+            })
+        })
     }
 
     handleEvent(e) {
