@@ -53,7 +53,7 @@ class UI {
         
         this.calculateLeftShiftMultiplier()
 
-        // this.shapeContainer.classList.add('outline'); 
+        this.shapeContainer.classList.add('outline'); 
         this.grid.appendChild(this.shapeContainer); 
 
         const playAnimation = true; 
@@ -69,13 +69,20 @@ class UI {
                         const animation = setInterval(() =>  {
                             this.verticalPosition += 1; 
                             this.shapeContainer.style.top = `${this.verticalPosition * this.cellSize}px`; 
-                            const nextCellRow = this.verticalPosition + tetromino.shape.length + 1; 
+                            const nextCellRow = this.verticalPosition + this.tetromino.shape.length + 1; 
 
                             if(nextCellRow < this.rows) {
-                                // console.log(`next cell row: ${nextCellRow}`)
-                                // console.log(`cell column: ${this.horizontalMove}`)
-                                const nextCell = gameBoard.grid[nextCellRow-1][this.horizontalMove]
-                                if(nextCell > 0) {
+                                
+                                let nextFrameCollision;
+                                for(let cell = 0; cell < this.tetromino.width; cell++) {
+                                    const nextCell = this.gameBoard.grid[nextCellRow-1][this.horizontalMove + cell]; 
+                                    if(nextCell > 0) {
+                                        nextFrameCollision = true; 
+                                        break;
+                                    }
+                                }
+                                
+                                if(nextFrameCollision) {
 
                                     const horizontalPosition = (this.leftShiftMultiplier * -1 ) + this.horizontalMove
                                     document.removeEventListener('keydown', this)
@@ -121,7 +128,7 @@ class UI {
     calculateShapeContainer() {
         const divs = this.shapeContainer.querySelectorAll('div'); 
         if(divs.length > 0) {
-            this.shapeContainer.removeChildren()
+            divs.forEach(cell => cell.remove())
         }
 
         this.tetromino.shape.forEach((row, rowIndex) => {
@@ -170,6 +177,7 @@ class UI {
     }
 
     handleEvent(e) {
+        // change the e.key control flow into a switch statement
         if(e.type === 'keydown'){
             if (!e.repeat) {
                 if(e.key === "ArrowLeft"){
@@ -195,7 +203,8 @@ class UI {
                 } else if(e.key === "ArrowRight") {
                     // console.log('right arrow clicked')
                     // checks if we're clicking past the right boundary
-                    if(this.horizontalMove < this.columns - 1) {
+                    if(this.horizontalMove < this.columns - this.tetromino.width) {
+                        // this -1 should be the width of the shape, which changes per rotation
 
                          /* 
                             if we're within the right boundary and there isn't a cell already on the gameBoard to the right of the bottom cell(s) then you can move to the right
@@ -212,12 +221,12 @@ class UI {
                             this.horizontalMove += 1
                         }
                     }
+                } else if (e.key === 'ArrowUp') {
+                    this.tetromino.rotate();
+                    this.calculateShapeContainer(); 
+                    this.calculateLeftShiftMultiplier();
                 }
                 this.shapeContainer.style.left = `${((this.leftShiftMultiplier * -1) + this.horizontalMove) * this.cellSize }px`;
-                /*
-                    I hardcoded the '-24' because I'm not able to reference the leftShiftMultiplier from the 
-                    event handler. I have to eventually make that variable an object property and this constraint is actually leading me to believe maybe I was supposed to have one class that outputs the grid and another that deals strictly with the shapeContainer, but I know as the developer that most of these properties are for the shapeContainer. You have to make all these values that need to be accessible across methods object properties. 
-                */
 
             }
         }
