@@ -3,7 +3,7 @@ class UI {
     cellSize;  
     rows;  
     columns;  
-    grid;  
+    grid; 
     horizontalMove;  
     shapeContainer;  
     verticalPosition;
@@ -144,6 +144,44 @@ class UI {
                 }
             })
         })
+    }
+
+    clearRow(gameBoard){
+        /* 
+            remove all child divs
+            create a new div that is gameBoard.columns * highest filled column(row number) in area
+            shape will contain 0s, and other numbers greater than zero that represent the tetrominos
+            make the div a grid container; use the calculateShapeContainer fn
+            make it absolute, then use left:,bottom:0 
+        */
+
+        const tetrominos = this.grid.querySelectorAll('div'); 
+        tetrominos.forEach(tetromino=> tetromino.remove()); 
+        
+        const tetrominoTower = document.createElement('div'); 
+
+        tetrominoTower.style.display = "grid"; 
+        tetrominoTower.style.gridTemplateColumns = `repeat(${this.columns}, ${this.cellSize}px)`; 
+        tetrominoTower.style.gridTemplateRows = `repeat(${this.rows}, ${this.cellSize}px)`; 
+        tetrominoTower.style.position = "absolute"; 
+        tetrominoTower.style.left = '0px';
+        tetrominoTower.style.bottom = '0px';
+
+        gameBoard.grid.forEach((row, rowIndex) => {
+            row.forEach((cell, columnIndex) => {
+                if(cell > 0) {
+                    const cellElement = document.createElement('div'); 
+                    cellElement.classList.add(this.getCellColor(cell));
+                    cellElement.style.gridRowStart = `${rowIndex + 1}`; 
+                    cellElement.style.gridRowEnd = `${rowIndex + 2}`;
+                    cellElement.style.gridColumnStart = `${columnIndex + 1}`;
+                    cellElement.style.gridColumnEnd = `${columnIndex + 2}`;
+                    tetrominoTower.appendChild(cellElement)
+                }
+            })
+        })
+
+        this.grid.appendChild(tetrominoTower); 
     }
 
     calculateLeftShiftMultiplier() {
