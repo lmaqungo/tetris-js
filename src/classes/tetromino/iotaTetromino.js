@@ -51,7 +51,7 @@ class IotaTetromino extends Tetromino {
                     [0, 0, 0, 0], 
                     [id, id, id, id]
                 ]; 
-                this.width = 1;
+                this.width = 4;
                 break;
         }
     }
