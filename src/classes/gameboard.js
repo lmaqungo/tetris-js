@@ -93,7 +93,9 @@ class GameBoard {
         })
         if(counter > 0) {
             this.shiftGrid(gridPartition, counter)
+            return true
         }
+        return false
     }
 
     checkFilledColumn() {
