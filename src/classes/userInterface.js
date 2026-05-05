@@ -53,7 +53,7 @@ class UI {
         
         this.calculateLeftShiftMultiplier()
 
-        this.shapeContainer.classList.add('outline'); 
+        // this.shapeContainer.classList.add('outline'); 
         this.grid.appendChild(this.shapeContainer); 
 
         const playAnimation = true; 
@@ -71,7 +71,7 @@ class UI {
                             this.shapeContainer.style.top = `${this.verticalPosition * this.cellSize}px`; 
                             const nextCellRow = this.verticalPosition + this.tetromino.shape.length + 1; 
 
-                            if(nextCellRow < this.rows) {
+                            if(nextCellRow <= this.rows) {
                                 
                                 let nextFrameCollision;
                                 for(let cell = 0; cell < this.tetromino.width; cell++) {
@@ -81,7 +81,7 @@ class UI {
                                         break;
                                     }
                                 }
-                                
+
                                 if(nextFrameCollision) {
 
                                     const horizontalPosition = (this.leftShiftMultiplier * -1 ) + this.horizontalMove
@@ -111,7 +111,7 @@ class UI {
                                 )
                                 
                                 clearInterval(animation)
-                        }
+                            }
                         }, 500)
                     } catch(err) {
                         reject(err)
@@ -195,7 +195,6 @@ class UI {
                             -1 to look for the cell to the left
                         */
 
-                         
                         if(leftCell === 0) {
                             this.horizontalMove -= 1; 
                         }
@@ -225,7 +224,13 @@ class UI {
                     this.tetromino.rotate();
                     this.calculateShapeContainer(); 
                     this.calculateLeftShiftMultiplier();
+                    
+                    const rightShift = this.horizontalMove + this.tetromino.width; 
+                    if(rightShift > (this.columns - 1)){
+                            this.horizontalMove = this.columns - (this.tetromino.width)
+                        } 
                 }
+
                 this.shapeContainer.style.left = `${((this.leftShiftMultiplier * -1) + this.horizontalMove) * this.cellSize }px`;
 
             }
