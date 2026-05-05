@@ -67,7 +67,6 @@ class UI {
                     try {
                         document.addEventListener('keydown', this)
                         const animation = setInterval(() =>  {
-                            this.verticalPosition += 1; 
                             this.shapeContainer.style.top = `${this.verticalPosition * this.cellSize}px`; 
                             const nextCellRow = this.verticalPosition + this.tetromino.shape.length + 1; 
 
@@ -94,6 +93,8 @@ class UI {
                                             row: this.verticalPosition
                                         }
                                     )
+                                } else {
+                                    this.verticalPosition += 1; 
                                 }
                             } 
                             
