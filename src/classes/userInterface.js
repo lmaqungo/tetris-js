@@ -71,21 +71,14 @@ class UI {
                             const nextCellRow = this.verticalPosition + this.tetromino.shape.length + 1; 
 
                             if(nextCellRow <= this.rows) {
-                                
-                                let nextFrameCollision;
-                                for(let cell = 0; cell < this.tetromino.width; cell++) {
-                                    const nextCell = this.gameBoard.grid[nextCellRow-1][this.horizontalMove + cell]; 
-                                    if(nextCell > 0) {
-                                        nextFrameCollision = true; 
-                                        break;
-                                    }
-                                }
-                                /* wrote this May 8 15:36 at the library
-                                    Checking across the entire width of the shape only works for the I-shaped tetro
-                                    I need to create a function that returns the bottom-most cells then check the
-                                    gameboard grid for cells beyond them. The above function is the one that I need to 
-                                    change. 
-                                */
+                                                                
+                                const nextCells = []; 
+                                this.tetromino.getBottomCells().forEach((coord) => {
+                                    const bottomCell = this.gameBoard.grid[(this.verticalPosition + coord.row + 1)][((this.horizontalMove + (this.leftShiftMultiplier * -1)) + coord.col)];
+                                    nextCells.push(bottomCell);
+                                })
+
+                                const nextFrameCollision = nextCells.some(cell => cell > 0)
 
                                 if(nextFrameCollision) {
 
