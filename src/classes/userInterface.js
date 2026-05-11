@@ -53,7 +53,7 @@ class UI {
         
         this.calculateLeftShiftMultiplier()
 
-        // this.shapeContainer.classList.add('outline'); 
+        this.shapeContainer.classList.add('outline'); 
         this.grid.appendChild(this.shapeContainer); 
 
         const playAnimation = true; 
@@ -80,6 +80,12 @@ class UI {
                                         break;
                                     }
                                 }
+                                /* wrote this May 8 15:36 at the library
+                                    Checking across the entire width of the shape only works for the I-shaped tetro
+                                    I need to create a function that returns the bottom-most cells then check the
+                                    gameboard grid for cells beyond them. The above function is the one that I need to 
+                                    change. 
+                                */
 
                                 if(nextFrameCollision) {
 
@@ -113,7 +119,7 @@ class UI {
                                 
                                 clearInterval(animation)
                             }
-                        }, 500)
+                        }, 400)
                     } catch(err) {
                         reject(err)
                     }
@@ -205,11 +211,13 @@ class UI {
                 break
             }
         }
+
         /* 
             Make the middle of the grid the starting point, then set the max and min
             of the horizontal move the negative and positive of this.columns
             use this line: (this.columns / 2 * this.cellSize)
         */
+
         const leftOrigin = (this.cellSize * this.leftShiftMultiplier) * -1;
 
         this.shapeContainer.style.left = `${leftOrigin}px`;
@@ -227,47 +235,72 @@ class UI {
                             if we're within the left boundary and there isn't a cell already on the gameBoard to the left of the bottom cell(s) then you can move to the left
                         */
                         
-                        // bottom cell of tetromino
-                        const bottomCellVerticalPosition = this.verticalPosition + this.tetromino.shape.length - 1;
-                        const leftCell = this.gameBoard.grid[bottomCellVerticalPosition][this.horizontalMove - 1]; 
-                        /* 
-                            -1 to look for the cell to the left
-                        */
+                        const leftCells = []; 
+                         
+                        this.tetromino.getLeftMostCells().forEach((coord) => {
+                            const leftCell = this.gameBoard.grid[(this.verticalPosition + coord.row)][((this.horizontalMove + (this.leftShiftMultiplier * -1)) + coord.col - 1)]; 
+                            leftCells.push(leftCell)
+                        })
 
-                        if(leftCell === 0) {
+                        if(leftCells.every(cell => cell === 0)) {
                             this.horizontalMove -= 1; 
                         }
                     }
                 } else if(e.key === "ArrowRight") {
-                    // console.log('right arrow clicked')
                     // checks if we're clicking past the right boundary
                     if(this.horizontalMove < this.columns - this.tetromino.width) {
-                        // this -1 should be the width of the shape, which changes per rotation
 
                          /* 
                             if we're within the right boundary and there isn't a cell already on the gameBoard to the right of the bottom cell(s) then you can move to the right
                         */
 
-                        const bottomCellVerticalPosition = this.verticalPosition + this.tetromino.shape.length - 1;
-                        const rightCell = this.gameBoard.grid[bottomCellVerticalPosition][this.horizontalMove + 1]; 
+                        const rightCells = []
 
-                        /* 
-                            +1 to look to the right
-                        */
+                        this.tetromino.getRightMostCells().forEach((coord) => {
+                            const rightCell = this.gameBoard.grid[(this.verticalPosition + coord.row)][((this.horizontalMove + (this.leftShiftMultiplier * -1) ) + coord.col + 1)]; 
+                            rightCells.push(rightCell)
+                        })
 
-                        if(rightCell === 0) {
+                       if(rightCells.every(cell => cell === 0)) {
                             this.horizontalMove += 1
                         }
                     }
                 } else if (e.key === 'ArrowUp') {
-                    this.tetromino.rotate();
-                    this.calculateShapeContainer(); 
-                    this.calculateLeftShiftMultiplier();
                     
-                    const rightShift = this.horizontalMove + this.tetromino.width; 
-                    if(rightShift > (this.columns - 1)){
-                            this.horizontalMove = this.columns - (this.tetromino.width)
-                        } 
+                    
+                    /*
+                    If there are presently filled columns, set the verticalPosition, otherwise pass
+                    */
+                   
+                   this.tetromino.rotate();
+                   this.calculateLeftShiftMultiplier();
+                   this.calculateShapeContainer(); 
+                   
+                   const rightShift = this.horizontalMove + this.tetromino.width; 
+                   if(rightShift > (this.columns - 1)){
+                       this.horizontalMove = this.columns - (this.tetromino.width)
+                    } 
+
+                    const columns = []
+                    
+                    this.tetromino.shape.forEach((row, rowIndex) => {
+                        row.forEach((cell, columnIndex) => {
+                            const gridCell = this.gameBoard.grid[(this.verticalPosition + rowIndex)][(this.horizontalMove + (this.leftShiftMultiplier * -1) + columnIndex)];
+                            if(gridCell > 0) {
+                                const column = this.horizontalMove + (this.leftShiftMultiplier * -1) + columnIndex
+                                if(!columns.includes(column)){
+                                    columns.push(column)
+                                }
+                            }
+                        })
+                    })
+
+                    
+                    
+                    if(columns.length > 0) {
+                        console.log("You're violating a rotation rule!")
+                        console.log(columns)
+                    }
                 }
 
                 this.shapeContainer.style.left = `${((this.leftShiftMultiplier * -1) + this.horizontalMove) * this.cellSize }px`;
