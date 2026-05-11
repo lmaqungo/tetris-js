@@ -5,6 +5,8 @@ class IotaTetromino extends Tetromino {
     frame; 
     colorId;
     width;
+    rightmostCol; 
+    leftmostCol;
 
     constructor(id, frame=1) {
         super(); 
@@ -25,6 +27,8 @@ class IotaTetromino extends Tetromino {
                     [0, id, 0, 0]
                 ]; 
                 this.width = 1;
+                this.rightmostCol = 1;
+                this.leftmostCol = 1;
                 break;
             case 2: 
                 this.shape = [
@@ -34,6 +38,8 @@ class IotaTetromino extends Tetromino {
                     [id, id, id, id]
                 ]; 
                 this.width = 4;
+                this.rightmostCol = 3;
+                this.leftmostCol = 0;
                 break;
             case 3: 
                 this.shape = [
@@ -43,6 +49,8 @@ class IotaTetromino extends Tetromino {
                     [0, 0, id, 0]
                 ]; 
                 this.width = 1;
+                this.rightmostCol = 2;
+                this.leftmostCol = 2;
                 break;
             case 4: 
                 this.shape = [
@@ -52,8 +60,46 @@ class IotaTetromino extends Tetromino {
                     [id, id, id, id]
                 ]; 
                 this.width = 4;
+                this.rightmostCol = 3;
+                this.leftmostCol = 0;
                 break;
         }
+    }
+
+    getRightMostCells(){
+        const rightCells = []
+        this.shape.forEach((row, rowIndex) => {
+            row.forEach((cell, colIndex) => {
+                if(cell > 0) {
+                    if(colIndex === this.rightmostCol){
+                        rightCells.push(
+                            {
+                                row: rowIndex,
+                                col: colIndex
+                            }
+                        )
+                    }
+                }
+            })
+        })
+        return rightCells
+    }
+
+    getLeftMostCells() {
+        const leftCells = []; 
+        this.shape.forEach((row, rowIndex) => {
+            row.forEach((cell, colIndex) => {
+                if(cell > 0) {
+                    if(colIndex === this.leftmostCol) {
+                        leftCells.push({
+                            row: rowIndex, 
+                            col: colIndex
+                        })
+                    }
+                }
+            })
+        })
+        return leftCells
     }
 
     get shape() {
@@ -88,5 +134,15 @@ class IotaTetromino extends Tetromino {
         return shapeString
     }
 }
+
+for(let i = 1; i < 5; i ++) {
+    const iota = new IotaTetromino(i, i); 
+    console.log(iota.toString())
+    
+    iota.getRightMostCells().forEach((coord) => {
+        console.log(`row: ${coord.row}, col: ${coord.col}`)
+    })
+}
+
 
 export default IotaTetromino
