@@ -122,6 +122,21 @@ class GameBoard {
         }
         this.grid = newGrid.concat(gridPartition); 
     }
+
+    getHighestCellRow(columnsArrInput){
+        const rows = []; 
+        columnsArrInput.forEach((columnIndex) => {
+            for(let col = 0; col < this.columns; col++) {
+                const columnArr = []; 
+                this.grid.forEach(row => columnArr.push(row[col]));
+                
+                if(columnIndex === col){
+                    rows.push(columnArr.findIndex(cell => cell > 0))
+                }
+            }
+        })
+        return Math.min(...rows)
+    }
     
     play() {
         while(true) {
