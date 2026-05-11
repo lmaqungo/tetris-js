@@ -41,7 +41,7 @@ class UI {
         this.tetromino = tetromino; 
         this.gameBoard = gameBoard;
 
-        this.horizontalMove = 0; 
+        this.horizontalMove = 0;  
         this.shapeContainer = document.createElement('div'); 
         
         this.shapeContainer.style.display = "grid"; 
@@ -53,7 +53,7 @@ class UI {
         
         this.calculateLeftShiftMultiplier()
 
-        this.shapeContainer.classList.add('outline'); 
+        // this.shapeContainer.classList.add('outline'); 
         this.grid.appendChild(this.shapeContainer); 
 
         const playAnimation = true; 
@@ -295,11 +295,12 @@ class UI {
                         })
                     })
 
-                    
-                    
                     if(columns.length > 0) {
-                        console.log("You're violating a rotation rule!")
-                        console.log(columns)
+                        console.log('you made a rotation violation!\n');
+                        const highestCellRow = this.gameBoard.getHighestCellRow(columns); 
+                        console.log(`highest row: ${highestCellRow}`)
+                        this.verticalPosition = highestCellRow - this.tetromino.shape.length;
+                        
                     }
                 }
 
