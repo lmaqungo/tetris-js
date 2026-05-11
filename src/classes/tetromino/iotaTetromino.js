@@ -102,6 +102,25 @@ class IotaTetromino extends Tetromino {
         return leftCells
     }
 
+    getBottomCells(){
+        const bottomCells = []; 
+        this.shape.forEach((row, rowIndex) => {
+            row.forEach((cell, columnIndex) => {
+                if(cell > 0) {
+                    if(rowIndex === this.shape.length - 1) {
+                        bottomCells.push(
+                            {
+                                row: rowIndex, 
+                                col: columnIndex
+                            }
+                        )
+                    }
+                }
+            })
+        })
+        return bottomCells
+    }
+
     get shape() {
         return this.shape
     }
@@ -139,7 +158,7 @@ for(let i = 1; i < 5; i ++) {
     const iota = new IotaTetromino(i, i); 
     console.log(iota.toString())
     
-    iota.getRightMostCells().forEach((coord) => {
+    iota.getBottomCells().forEach((coord) => {
         console.log(`row: ${coord.row}, col: ${coord.col}`)
     })
 }
