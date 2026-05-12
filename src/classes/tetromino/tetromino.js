@@ -37,7 +37,7 @@ class Tetromino {
         const rightCells = []
         this.shape.forEach((row, rowIndex) => {
             const lastCellCol = row.findLastIndex(element => element > 0)
-            if(lastCellCol > 0) {
+            if(lastCellCol > -1) {
                 rightCells.push({
                     row: rowIndex, 
                     col: lastCellCol
@@ -69,7 +69,7 @@ class Tetromino {
                 columnArr.push(row[col])
             })
             const lastCellRow = columnArr.findLastIndex(element => element > 0); 
-            if(lastCellRow > 0){
+            if(lastCellRow > -1){
                 bottomCells.push(
                     {
                         row: lastCellRow, 

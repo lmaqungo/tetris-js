@@ -2,6 +2,7 @@ import OmegaTetromino from "./tetromino/omegaTetromino.js"
 import IotaTetromino from "./tetromino/iotaTetromino.js";
 import TauTetromino from "./tetromino/tauTetromino.js";
 import SigmaTetromino from "./tetromino/sigmaTetromino.js";
+import LambdaTetromino from "./tetromino/lambdaTetromino.js";
 
 class GameBoard {
     grid = []; 
@@ -78,7 +79,7 @@ class GameBoard {
 
     getTetromino() {
         const color = Math.floor(Math.random() * 6) + 1;
-        return new SigmaTetromino(color)
+        return new LambdaTetromino(color)
     }
 
     checkFilledRows(){
