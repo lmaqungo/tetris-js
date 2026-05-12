@@ -2,33 +2,26 @@ import Tetromino from "./tetromino.js";
 
 class OmegaTetromino extends Tetromino {
     shape;
+    colorId;
+    width;
+
     constructor(id){
         super(); 
+        this.colorId = id; 
+
         this.shape = [
             [id, id], 
             [id, id]
-        ]
+        ]; 
+        this.width = 2; 
     }
 
-    get shape(){
-        return this.shape
+    rotate(){
+        return
     }
 
-    set shape(input){
-        this.shape = input
-    }
-
-    toString() {
-        let shapeString = ''
-        this.shape.forEach((row, rowIndex) => {
-            shapeString+= row.join("")
-            if(rowIndex < this.shape.length - 1 ){
-                shapeString+= '\n'
-            }
-        })
-        return shapeString
-    }
 }
+
 
 export default OmegaTetromino
 
