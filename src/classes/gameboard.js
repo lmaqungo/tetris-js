@@ -1,5 +1,6 @@
 import OmegaTetromino from "./tetromino/omegaTetromino.js"
 import IotaTetromino from "./tetromino/iotaTetromino.js";
+import TauTetromino from "./tetromino/tauTetromino.js";
 
 class GameBoard {
     grid = []; 

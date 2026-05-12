@@ -230,7 +230,7 @@ class UI {
                         
                         const leftCells = []; 
                          
-                        this.tetromino.getLeftMostCells().forEach((coord) => {
+                        this.tetromino.getLeftCells().forEach((coord) => {
                             const leftCell = this.gameBoard.grid[(this.verticalPosition + coord.row)][((this.horizontalMove + (this.leftShiftMultiplier * -1)) + coord.col - 1)]; 
                             leftCells.push(leftCell)
                         })
@@ -249,7 +249,7 @@ class UI {
 
                         const rightCells = []
 
-                        this.tetromino.getRightMostCells().forEach((coord) => {
+                        this.tetromino.getRightCells().forEach((coord) => {
                             const rightCell = this.gameBoard.grid[(this.verticalPosition + coord.row)][((this.horizontalMove + (this.leftShiftMultiplier * -1) ) + coord.col + 1)]; 
                             rightCells.push(rightCell)
                         })
