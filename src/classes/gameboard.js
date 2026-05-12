@@ -1,6 +1,7 @@
 import OmegaTetromino from "./tetromino/omegaTetromino.js"
 import IotaTetromino from "./tetromino/iotaTetromino.js";
 import TauTetromino from "./tetromino/tauTetromino.js";
+import SigmaTetromino from "./tetromino/sigmaTetromino.js";
 
 class GameBoard {
     grid = []; 
@@ -77,7 +78,7 @@ class GameBoard {
 
     getTetromino() {
         const color = Math.floor(Math.random() * 6) + 1;
-        return new IotaTetromino(color)
+        return new SigmaTetromino(color)
     }
 
     checkFilledRows(){
@@ -139,29 +140,6 @@ class GameBoard {
         return Math.min(...rows)
     }
     
-    play() {
-        while(true) {
-            const coordinates = [[1, 1], [3, 1], [5, 1], [7, 1], [9, 3]]; 
-            coordinates.forEach((coordinate) => {
-                const omega = new OmegaTetromino(2); 
-                const placeResult =  this.placeTetromino(coordinate[0], coordinate[1], omega.shape); 
-                if(placeResult) {
-                    console.log(this.toString())
-                    console.log('check filled rows:'); 
-                    this.checkFilledRows(); 
-                    console.log(this.toString());
-                    console.log('\n')
-                    if(this.checkFilledColumn()) {
-                        console.log('You lose! You lose Tony Stark!'); 
-                        return
-                    }
-                    
-                }
-            })
-            break;
-        }
-    }
-
 }
 
 

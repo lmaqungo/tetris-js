@@ -200,7 +200,7 @@ class UI {
             })
             if(column.every(element => element === 0)) {
                 this.leftShiftMultiplier += 1
-            } else if(column.every(element => element !== 0)) {
+            } else if(column.some(element => element > 0)) {
                 break
             }
         }
