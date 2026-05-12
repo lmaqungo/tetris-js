@@ -8,7 +8,11 @@ class Tetromino {
     }
 
     get shape(){
-        throw new Error('get shape() is an abstract method that must be implemented by subclass')
+        return this.shape
+    }
+
+    set shape(input) {
+        this.shape = input
     }
 
     getRandomFrame(frame=null) {
@@ -27,6 +31,73 @@ class Tetromino {
             frame += 1
         }
         return frame;
+    }
+
+    getRightCells(){
+        const rightCells = []
+        this.shape.forEach((row, rowIndex) => {
+            const lastCellCol = row.findLastIndex(element => element > 0)
+            if(lastCellCol > 0) {
+                rightCells.push({
+                    row: rowIndex, 
+                    col: lastCellCol
+                })
+            }
+        })
+        return rightCells
+    }
+
+    getLeftCells() {
+        const leftCells = []; 
+        this.shape.forEach((row, rowIndex) => {
+            const firstCellCol = row.findIndex(element => element > 0)
+            if(firstCellCol > -1) {
+                leftCells.push({
+                    row: rowIndex, 
+                    col: firstCellCol
+                })
+            }
+        })
+        return leftCells
+    }
+
+    getBottomCells(){
+        const bottomCells = []; 
+        for(let col = 0; col < this.shape.length; col++) {
+            const columnArr = [];
+            this.shape.forEach((row) => {
+                columnArr.push(row[col])
+            })
+            const lastCellRow = columnArr.findLastIndex(element => element > 0); 
+            if(lastCellRow > 0){
+                bottomCells.push(
+                    {
+                        row: lastCellRow, 
+                        col: col
+                    }
+                )
+            }
+        }
+        return bottomCells
+    }
+
+    toString() {
+        let shapeString = ''; 
+        this.shape.forEach((row, rowIndex) => {
+            let rowString = ''; 
+            row.forEach((cell) => {
+                if(cell === 0){
+                    rowString+= ' '
+                } else{
+                    rowString += cell
+                }
+            })
+            shapeString+= rowString
+            if(rowIndex < this.shape.length - 1) {
+                shapeString+= '\n'
+            }
+        })
+        return shapeString
     }
 
 }
