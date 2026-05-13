@@ -10,6 +10,7 @@ class UI {
     leftShiftMultiplier;
     topShiftMultiplier;
     scoreDisplay;
+    levelDisplay;
 
     tetromino; 
     gameBoard;
@@ -23,7 +24,10 @@ class UI {
         this.rows = rows; 
         this.columns = columns; 
         const body = document.querySelector('body'); 
-        body.classList.add('flex', 'justify-center', 'items-center', 'h-screen', 'gap-1', 'flex-col'); 
+        body.classList.add('flex', 'justify-center', 'items-center', 'h-screen'); 
+
+        const mainContainer = document.createElement('div'); 
+        mainContainer.classList.add('flex', 'flex-col', 'gap-1', 'items-center');
         
         this.grid = document.createElement("div"); 
         const dimensions = {
@@ -32,18 +36,25 @@ class UI {
         }
         this.grid.style.height = dimensions.height
         this.grid.style.width = dimensions.width
-        this.grid.classList.add('outline-2', 'outline-black', 'bg-cyan-500');
+        this.grid.classList.add('outline-2', 'outline-black');
         this.grid.style.position = "relative"
 
-        this.scoreDisplay = document.createElement('p'); 
-        this.scoreDisplay.textContent = `score: ${0}`; 
+        const stats = document.createElement('div'); 
+        stats.classList.add('bold', 'text-sm')
 
-        /*
-            Will need to create a parent container that holds the scoreDisplay and grid. It will be the direct child of the body element.
-        */
+        this.scoreDisplay = document.createElement('p'); 
+        this.scoreDisplay.textContent = `Score: ${0}`; 
+        this.levelDisplay = document.createElement('p'); 
+        this.levelDisplay.textContent = `Level: ${1}`; 
+
+        stats.append(this.scoreDisplay)
+        stats.append(this.levelDisplay)
+
+        mainContainer.append(this.grid); 
+        mainContainer.append(stats);    
+
+        body.appendChild(mainContainer)
         
-        body.appendChild(this.grid)
-        body.appendChild(this.scoreDisplay)
     } 
 
     drawTetromino(tetromino, gameBoard) {
