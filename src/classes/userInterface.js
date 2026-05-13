@@ -36,6 +36,10 @@ class UI {
 
         this.scoreDisplay = document.createElement('p'); 
         this.scoreDisplay.textContent = `score: ${0}`; 
+
+        /*
+            Will need to create a parent container that holds the scoreDisplay and grid. It will be the direct child of the body element.
+        */
         
         body.appendChild(this.grid)
         body.appendChild(this.scoreDisplay)
@@ -46,7 +50,7 @@ class UI {
         this.tetromino = tetromino;
         this.gameBoard = gameBoard;
 
-        this.horizontalMove = 0;  
+        this.horizontalMove = Math.round(((9- this.tetromino.width)/2 ));
         this.shapeContainer = document.createElement('div'); 
         
         this.shapeContainer.style.display = "grid"; 
@@ -212,15 +216,7 @@ class UI {
             }
         }
 
-        /* 
-            Make the middle of the grid the starting point, then set the max and min
-            of the horizontal move the negative and positive of this.columns
-            use this line: (this.columns / 2 * this.cellSize)
-        */
-
-        const leftOrigin = (this.cellSize * this.leftShiftMultiplier) * -1;
-
-        this.shapeContainer.style.left = `${leftOrigin}px`;
+        this.shapeContainer.style.left = `${((this.leftShiftMultiplier * -1) + this.horizontalMove) * this.cellSize }px`;
     }
 
     handleEvent(e) {
