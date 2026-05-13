@@ -8,6 +8,7 @@ class UI {
     shapeContainer;  
     verticalPosition;
     leftShiftMultiplier;
+    topShiftMultiplier;
     scoreDisplay;
 
     tetromino; 
@@ -61,8 +62,9 @@ class UI {
         this.calculateShapeContainer()
         
         this.calculateLeftShiftMultiplier()
+        this.calculateTopShiftMultiplier()
 
-        // this.shapeContainer.classList.add('outline'); 
+        this.shapeContainer.classList.add('outline'); 
         this.grid.appendChild(this.shapeContainer); 
 
         const playAnimation = true; 
@@ -76,7 +78,8 @@ class UI {
                     try {
                         document.addEventListener('keydown', this)
                         const animation = setInterval(() =>  {
-                            this.shapeContainer.style.top = `${this.verticalPosition * this.cellSize}px`; 
+                            this.shapeContainer.style.top = `${this.verticalPosition * this.cellSize }px`; 
+
                             const nextCellRow = this.verticalPosition + this.tetromino.shape.length + 1; 
 
                             if(nextCellRow <= this.rows) {
@@ -217,6 +220,18 @@ class UI {
         }
 
         this.shapeContainer.style.left = `${((this.leftShiftMultiplier * -1) + this.horizontalMove) * this.cellSize }px`;
+    }
+
+    calculateTopShiftMultiplier(){
+        this.topShiftMultiplier = 0; 
+
+        this.tetromino.shape.forEach((row) => {
+            if(row.every(cell => cell === 0)){
+                this.topShiftMultiplier+=1
+            }
+        })
+
+        this.shapeContainer.style.top = `${(this.topShiftMultiplier * -1) * this.cellSize }px`;  
     }
 
     handleEvent(e) {
