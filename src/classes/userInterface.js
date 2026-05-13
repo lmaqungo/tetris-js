@@ -64,7 +64,7 @@ class UI {
         this.calculateLeftShiftMultiplier()
         this.calculateTopShiftMultiplier()
 
-        this.shapeContainer.classList.add('outline'); 
+        // this.shapeContainer.classList.add('outline'); 
         this.grid.appendChild(this.shapeContainer); 
 
         const playAnimation = true; 
@@ -78,15 +78,15 @@ class UI {
                     try {
                         document.addEventListener('keydown', this)
                         const animation = setInterval(() =>  {
-                            this.shapeContainer.style.top = `${this.verticalPosition * this.cellSize }px`; 
+                            this.shapeContainer.style.top = `${(this.verticalPosition + (this.topShiftMultiplier * -1)) * this.cellSize }px`; 
 
-                            const nextCellRow = this.verticalPosition + this.tetromino.shape.length + 1; 
+                            const nextCellRow = (this.verticalPosition + (this.topShiftMultiplier * -1)) + this.tetromino.shape.length + 1; 
 
                             if(nextCellRow <= this.rows) {
                                                                 
                                 const nextCells = []; 
                                 this.tetromino.getBottomCells().forEach((coord) => {
-                                    const bottomCell = this.gameBoard.grid[(this.verticalPosition + coord.row + 1)][((this.horizontalMove + (this.leftShiftMultiplier * -1)) + coord.col)];
+                                    const bottomCell = this.gameBoard.grid[((this.verticalPosition + (this.topShiftMultiplier * -1)) + coord.row + 1)][((this.horizontalMove + (this.leftShiftMultiplier * -1)) + coord.col)];
                                     nextCells.push(bottomCell);
                                 })
 
@@ -94,14 +94,13 @@ class UI {
 
                                 if(nextFrameCollision) {
 
-                                    const horizontalPosition = (this.leftShiftMultiplier * -1 ) + this.horizontalMove
                                     document.removeEventListener('keydown', this)
                                     clearInterval(animation)
 
                                     resolve(
                                         {
-                                            column: horizontalPosition,
-                                            row: this.verticalPosition
+                                            column: (this.leftShiftMultiplier * -1 ) + this.horizontalMove,
+                                            row: this.verticalPosition + (this.topShiftMultiplier * -1)
                                         }
                                     )
                                 } else {
@@ -111,14 +110,12 @@ class UI {
                             
                             if(nextCellRow > this.rows) {
                                 
-                                const horizontalPosition = (this.leftShiftMultiplier * -1 ) + this.horizontalMove
-                              
                                 document.removeEventListener('keydown', this)
                                 
                                 resolve(
                                     {
-                                        column: horizontalPosition,
-                                        row: this.verticalPosition
+                                        column: (this.leftShiftMultiplier * -1 ) + this.horizontalMove,
+                                        row: this.verticalPosition + (this.topShiftMultiplier * -1)
                                     }
                                 )
                                 
@@ -249,7 +246,7 @@ class UI {
                         const leftCells = []; 
                          
                         this.tetromino.getLeftCells().forEach((coord) => {
-                            const leftCell = this.gameBoard.grid[(this.verticalPosition + coord.row)][((this.horizontalMove + (this.leftShiftMultiplier * -1)) + coord.col - 1)]; 
+                            const leftCell = this.gameBoard.grid[( (this.verticalPosition + (this.topShiftMultiplier * -1))  + coord.row)][((this.horizontalMove + (this.leftShiftMultiplier * -1)) + coord.col - 1)]; 
                             leftCells.push(leftCell)
                         })
 
@@ -268,7 +265,7 @@ class UI {
                         const rightCells = []
 
                         this.tetromino.getRightCells().forEach((coord) => {
-                            const rightCell = this.gameBoard.grid[(this.verticalPosition + coord.row)][((this.horizontalMove + (this.leftShiftMultiplier * -1) ) + coord.col + 1)]; 
+                            const rightCell = this.gameBoard.grid[((this.verticalPosition + (this.topShiftMultiplier * -1))  + coord.row)][((this.horizontalMove + (this.leftShiftMultiplier * -1) ) + coord.col + 1)]; 
                             rightCells.push(rightCell)
                         })
 
@@ -277,7 +274,6 @@ class UI {
                         }
                     }
                 } else if (e.key === 'ArrowUp') {
-                    
                     
                     /*
                     If there are presently filled columns, set the verticalPosition, otherwise pass
@@ -290,13 +286,17 @@ class UI {
                    const rightShift = this.horizontalMove + this.tetromino.width; 
                    if(rightShift > (this.columns - 1)){
                        this.horizontalMove = this.columns - (this.tetromino.width)
-                    } 
+                    }
+                    
+                    if(this.verticalPosition - this.topShiftMultiplier < 0) {
+                        this.calculateTopShiftMultiplier();
+                    }
 
                     const columns = []
                     
                     this.tetromino.shape.forEach((row, rowIndex) => {
                         row.forEach((cell, columnIndex) => {
-                            const gridCell = this.gameBoard.grid[(this.verticalPosition + rowIndex)][(this.horizontalMove + (this.leftShiftMultiplier * -1) + columnIndex)];
+                            const gridCell = this.gameBoard.grid[( (this.verticalPosition + (this.topShiftMultiplier * -1))  + rowIndex)][(this.horizontalMove + (this.leftShiftMultiplier * -1) + columnIndex)];
                             if(gridCell > 0) {
                                 const column = this.horizontalMove + (this.leftShiftMultiplier * -1) + columnIndex
                                 if(!columns.includes(column)){
@@ -309,8 +309,8 @@ class UI {
                     if(columns.length > 0) {
                         console.log('you made a rotation violation!\n');
                         const highestCellRow = this.gameBoard.getHighestCellRow(columns); 
-                        console.log(`highest row: ${highestCellRow}`)
-                        this.verticalPosition = highestCellRow - this.tetromino.shape.length;
+                        console.log(`highest row: ${highestCellRow}`);
+                        this.verticalPosition = highestCellRow + (this.topShiftMultiplier * -1) - this.tetromino.shape.length;
                         
                     }
                 }
