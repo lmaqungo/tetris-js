@@ -8,6 +8,7 @@ class UI {
     shapeContainer;  
     verticalPosition;
     leftShiftMultiplier;
+    scoreDisplay;
 
     tetromino; 
     gameBoard;
@@ -16,12 +17,12 @@ class UI {
         The shapeContainer properties will reset after every drawTetro fn call
     */
     
-    constructor(columns=10, rows=20, cellSize=24, ) {
+    constructor(columns=10, rows=20, cellSize=24 ) {
         this.cellSize = cellSize; 
         this.rows = rows; 
         this.columns = columns; 
         const body = document.querySelector('body'); 
-        body.classList.add('flex', 'justify-center', 'items-center', 'h-screen', 'gap-1'); 
+        body.classList.add('flex', 'justify-center', 'items-center', 'h-screen', 'gap-1', 'flex-col'); 
         
         this.grid = document.createElement("div"); 
         const dimensions = {
@@ -32,13 +33,17 @@ class UI {
         this.grid.style.width = dimensions.width
         this.grid.classList.add('outline-2', 'outline-black', 'bg-cyan-500');
         this.grid.style.position = "relative"
+
+        this.scoreDisplay = document.createElement('p'); 
+        this.scoreDisplay.textContent = `score: ${0}`; 
         
         body.appendChild(this.grid)
+        body.appendChild(this.scoreDisplay)
     } 
 
     drawTetromino(tetromino, gameBoard) {
 
-        this.tetromino = tetromino; 
+        this.tetromino = tetromino;
         this.gameBoard = gameBoard;
 
         this.horizontalMove = 0;  
@@ -154,6 +159,8 @@ class UI {
             make the div a grid container; use the calculateShapeContainer fn
             make it absolute, then use left:,bottom:0 
         */
+
+        this.scoreDisplay.textContent = `score: ${gameBoard.score}`; 
 
         const tetrominos = this.grid.querySelectorAll('div'); 
         tetrominos.forEach(tetromino=> tetromino.remove()); 
