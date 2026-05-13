@@ -1,4 +1,4 @@
-import OmegaTetromino from "./tetromino/omegaTetromino.js"
+import OmegaTetromino from "./tetromino/omegaTetromino.js";
 import IotaTetromino from "./tetromino/iotaTetromino.js";
 import TauTetromino from "./tetromino/tauTetromino.js";
 import SigmaTetromino from "./tetromino/sigmaTetromino.js";
@@ -10,6 +10,9 @@ class GameBoard {
     rows;
     score = 0;
     highScore = 0;
+    tetrominoQueue = [OmegaTetromino, IotaTetromino, TauTetromino, SigmaTetromino, LambdaTetromino];
+    tetrominoSelectorIndex = 0;
+    colorId = 1;
 
     constructor(rows=20, columns=10) {
         this.rows = rows;
@@ -78,8 +81,20 @@ class GameBoard {
     }
 
     getTetromino() {
-        const color = Math.floor(Math.random() * 6) + 1;
-        return new LambdaTetromino(color)
+        const tetroClass = this.tetrominoQueue[this.tetrominoSelectorIndex];
+        const tetroObj = new tetroClass(this.colorId)
+        if(this.tetrominoSelectorIndex === this.tetrominoQueue.length - 1){
+            this.tetrominoSelectorIndex = 0
+        } else{
+            this.tetrominoSelectorIndex+=1
+        }
+
+        if(this.colorId === 6){
+            this.colorId = 1
+        } else {
+            this.colorId++
+        }
+        return tetroObj
     }
 
     checkFilledRows(){
@@ -95,7 +110,8 @@ class GameBoard {
             }
         })
         if(counter > 0) {
-            this.shiftGrid(gridPartition, counter)
+            this.shiftGrid(gridPartition, counter);
+            this.score+= counter * 2;
             return true
         }
         return false
@@ -107,10 +123,10 @@ class GameBoard {
             this.grid.forEach((row) => {
                 colMemory.push(row[col])
             })
-            if(colMemory.every((element) => element > 0)) {
+            if(colMemory[0] > 0){
                 return true
             }
-        }
+        } 
         return false
     }
 
