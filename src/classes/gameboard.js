@@ -10,7 +10,7 @@ class GameBoard {
     rows;
     score = 0;
     highScore = 0;
-    tetrominoQueue = [OmegaTetromino, IotaTetromino, TauTetromino, SigmaTetromino, LambdaTetromino];
+    tetrominoQueue = [IotaTetromino, OmegaTetromino, TauTetromino, SigmaTetromino, LambdaTetromino]; 
     tetrominoSelectorIndex = 0;
     colorId = 1;
 
@@ -82,7 +82,7 @@ class GameBoard {
 
     getTetromino() {
         const tetroClass = this.tetrominoQueue[this.tetrominoSelectorIndex];
-        const tetroObj = new tetroClass(this.colorId)
+        const tetroObj = new tetroClass(this.colorId);
         if(this.tetrominoSelectorIndex === this.tetrominoQueue.length - 1){
             this.tetrominoSelectorIndex = 0
         } else{
@@ -95,6 +95,15 @@ class GameBoard {
             this.colorId++
         }
         return tetroObj
+    }
+
+    getQueuedTetromino(){
+        const nextTetrominoIndex = this.tetrominoSelectorIndex;
+        const nextColorId = this.colorId;
+        
+        const tetrominoClass = this.tetrominoQueue[nextTetrominoIndex];
+        const tetrominoObj = new tetrominoClass(nextColorId);
+        return tetrominoObj
     }
 
     checkFilledRows(){
