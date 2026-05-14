@@ -12,6 +12,7 @@ class UI {
     scoreDisplay;
     levelDisplay;
     verticalInputActive;
+    queuedShapeContainer;
 
     tetromino; 
     gameBoard;
@@ -27,9 +28,6 @@ class UI {
         const body = document.querySelector('body'); 
         body.classList.add('flex', 'justify-center', 'items-center', 'h-screen'); 
 
-        const mainContainer = document.createElement('div'); 
-        mainContainer.classList.add('flex', 'flex-col', 'gap-1', 'items-center');
-        
         this.grid = document.createElement("div"); 
         const dimensions = {
             width:`${cellSize * columns}px`,
@@ -38,7 +36,7 @@ class UI {
         this.grid.style.height = dimensions.height
         this.grid.style.width = dimensions.width
         this.grid.classList.add('outline-2', 'outline-black');
-        this.grid.style.position = "relative"
+        this.grid.style.position = "relative";
 
         const stats = document.createElement('div');
         stats.classList.add('bold', 'text-sm');
@@ -51,9 +49,23 @@ class UI {
         stats.append(this.scoreDisplay)
         stats.append(this.levelDisplay)
 
-        mainContainer.append(this.grid); 
-        mainContainer.append(stats);    
+        const leftContainer = document.createElement('div');
+        const rightContainer = document.createElement('div');
+        rightContainer.classList.add('relative')
 
+        leftContainer.append(this.grid);
+        leftContainer.append(stats);
+        leftContainer.classList.add('flex', 'flex-col', 'gap-4', 'items-center')
+        
+        this.queuedShapeContainer = document.createElement('div');
+        rightContainer.append(this.queuedShapeContainer);
+
+        const mainContainer = document.createElement('div'); 
+        mainContainer.classList.add('flex', 'gap-12');
+
+        mainContainer.append(leftContainer)
+        mainContainer.append(rightContainer)
+    
         body.appendChild(mainContainer)
         
     } 
@@ -64,7 +76,7 @@ class UI {
         this.gameBoard = gameBoard;
 
         this.horizontalMove = Math.round(((9- this.tetromino.width)/2 ));
-        this.shapeContainer = document.createElement('div'); 
+        this.shapeContainer = document.createElement('div');
         
         this.shapeContainer.style.display = "grid"; 
         this.shapeContainer.style.gridTemplateColumns = `repeat(${tetromino.shape.length}, ${this.cellSize}px)`; 
@@ -145,6 +157,32 @@ class UI {
         }
     }
 
+    calculateQueuedShapeContainer(queuedTetromino) {
+        const divs = this.queuedShapeContainer.querySelectorAll('div');
+        if(divs.length > 0) {
+            divs.forEach(cell => cell.remove())
+        }
+
+        this.queuedShapeContainer.style.display = "grid"; 
+        this.queuedShapeContainer.style.gridTemplateColumns = `repeat(${queuedTetromino.shape.length}, ${this.cellSize}px)`; 
+        this.queuedShapeContainer.style.gridTemplateRows = `repeat(${queuedTetromino.shape.length}, ${this.cellSize}px)`; 
+        this.queuedShapeContainer.style.position = "absolute";
+
+        queuedTetromino.shape.forEach((row, rowIndex) => {
+            row.forEach((cell, columnIndex) => {
+                if(cell > 0) {
+                    const cellElement = document.createElement('div');
+                    console.log('cell created!')
+                    cellElement.classList.add(this.getCellColor(cell));
+                    cellElement.style.gridRowStart = `${rowIndex + 1}`; 
+                    cellElement.style.gridRowEnd = `${rowIndex + 2}`;
+                    cellElement.style.gridColumnStart = `${columnIndex + 1}`;
+                    cellElement.style.gridColumnEnd = `${columnIndex + 2}`;
+                    this.queuedShapeContainer.append(cellElement)
+                }
+            })
+        })
+    }
 
     calculateShapeContainer() {
         const divs = this.shapeContainer.querySelectorAll('div'); 
@@ -161,7 +199,7 @@ class UI {
                     cellElement.style.gridRowEnd = `${rowIndex + 2}`;
                     cellElement.style.gridColumnStart = `${columnIndex + 1}`;
                     cellElement.style.gridColumnEnd = `${columnIndex + 2}`;
-                    this.shapeContainer.appendChild(cellElement);
+                    this.shapeContainer.append(cellElement);
                 }
             })
         })
