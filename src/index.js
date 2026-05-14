@@ -1,44 +1,44 @@
 import UI from "./classes/userInterface.js";
 import "./styles.css";
+import GameBoard from "./classes/gameboard.js";
 
-const ui = new UI();
+const gameBoard = new GameBoard();
+const ui = new UI(gameBoard.columns, gameBoard.rows);
+
+
+ui.startScreen(switchGameState);
+
+function switchGameState(state) {
+    switch(state){
+        case 1:
+            ui.initialiseGameEnvironment(); 
+            const running = true;
+            if(running) {
+                run();
+            }
+            break;
+    }
+}
 
 async function run() {
     console.log('start game')
-    for(let i = 0; i < 5; i++) {
-        const coordinates = await ui.drawTetromino()
-        console.log(`coordinates: ${coordinates}`)
-    }
-    console.log('end game')
-}; 
-
-run();
-
-
-
-/* 
-
-test.draw() => draws the tetro
-test.animateDown() => returns true or false
-
-let falling = test.animateDown()
-
-    test.draw();
-        test.animate();
-
-
-    async run() {
-        while(true) {
-            let tetro = new tetro(n);
-            await test.draw();
-            if(no lose) {
-                generateNewTetro()
-                await test.draw(newTetro)
-            }
+    while(true) {
+        const tetromino = gameBoard.getTetromino();
+        const nextTetromino = gameBoard.getQueuedTetromino();
+        ui.calculateQueuedShapeContainer(nextTetromino);
+        const coordinates = await ui.drawTetromino(tetromino, gameBoard);
+        gameBoard.placeTetromino(coordinates.row, coordinates.column, tetromino.shape)
+        if(gameBoard.checkFilledRows()){
+            ui.clearRow(gameBoard);
+        }
+        if(gameBoard.checkFilledColumn()){
+            console.log('a column has been filled!')
+            break
         }
     }
-        
-    let test.draw return a promise 
-}
+    console.log(gameBoard.toString());
+    console.log('end game');
+};
 
-*/
+
+
