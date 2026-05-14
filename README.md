@@ -24,6 +24,9 @@ The game revolves around these main classes. ```Gameboard``` stores the current 
 
 ## 📷 Demo
 
+![start screen](/public/screenshot1.png)
+![game screen](/public/screenshot2.png)
+
 ## 🚧 Installation and usage
 
 ```bash
