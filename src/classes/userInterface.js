@@ -21,17 +21,57 @@ class UI {
         The shapeContainer properties will reset after every drawTetro fn call
     */
     
-    constructor(columns=10, rows=20, cellSize=24 ) {
+    constructor(columns=10, rows=20, cellSize=24) {
         this.cellSize = cellSize; 
         this.rows = rows; 
-        this.columns = columns; 
+        this.columns = columns;
+    }
+
+    startScreen(cb){
         const body = document.querySelector('body'); 
+        body.classList.add('flex', 'justify-center', 'items-center', 'h-screen', 'font-inter'); 
+
+        const mainContainer = document.createElement('div'); 
+        mainContainer.classList.add('flex', 'gap-12');
+
+        const leftContainer = document.createElement('div'); 
+        leftContainer.classList.add('flex', 'flex-col', 'gap-6'); 
+
+        const heading = document.createElement('h1'); 
+        heading.textContent = 'Tetris';
+        heading.classList.add('font-bold', 'text-5xl');
+
+        const startButton = document.createElement('button'); 
+        startButton.textContent = 'Play';
+        startButton.classList.add('transition','font-medium', 'text-lg', 'rounded-sm', 'cursor-pointer', 'hover:bg-slate-200')
+
+        startButton.onclick =  () => cb(1)
+
+        leftContainer.append(heading)
+        leftContainer.append(startButton)
+
+        mainContainer.append(leftContainer)
+        body.append(mainContainer)
+    }
+    
+    clearScreen(){
+        const body = document.querySelector('body');
+        body.replaceChildren(); 
+        body.removeAttribute('class')
+    }
+    
+    initialiseGameEnvironment(){
+
+        this.clearScreen()
+
+        const body = document.querySelector('body'); 
+        
         body.classList.add('flex', 'justify-center', 'items-center', 'h-screen'); 
 
         this.grid = document.createElement("div"); 
         const dimensions = {
-            width:`${cellSize * columns}px`,
-            height:`${cellSize * rows}px`
+            width:`${this.cellSize * this.columns}px`,
+            height:`${this.cellSize * this.rows}px`
         }
         this.grid.style.height = dimensions.height
         this.grid.style.width = dimensions.width
@@ -67,8 +107,7 @@ class UI {
         mainContainer.append(rightContainer)
     
         body.appendChild(mainContainer)
-        
-    } 
+    }
 
     drawTetromino(tetromino, gameBoard) {
 
