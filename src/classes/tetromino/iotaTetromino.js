@@ -6,7 +6,7 @@ class IotaTetromino extends Tetromino {
     colorId;
     width;
 
-    constructor(id, frame=1) {
+    constructor(id, frame=2) {
         super(); 
         this.colorId = id;
         
@@ -62,15 +62,5 @@ class IotaTetromino extends Tetromino {
     }
 
 }
-
-for(let i = 1; i < 5; i ++) {
-    const iota = new IotaTetromino(i, i); 
-    console.log(iota.toString())
-    
-    iota.getBottomCells().forEach((coord) => {
-        console.log(`row: ${coord.row}, col: ${coord.col}`)
-    })
-}
-
 
 export default IotaTetromino

@@ -60,14 +60,7 @@ class LambdaTetromino extends Tetromino {
 
 }
 
-for(let i = 1; i < 5; i++){
-    const lambda = new LambdaTetromino(2, i)
-    console.log(lambda.toString()); 
-    
-    lambda.getBottomCells().forEach((coord) => {
-        console.log(`row: ${coord.row}, col: ${coord.col}`)
-    })
-}
+
 
 export default LambdaTetromino
 

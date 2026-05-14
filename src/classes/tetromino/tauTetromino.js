@@ -59,13 +59,5 @@ class TauTetromino extends Tetromino {
 
 }
 
-for(let i = 1; i < 5; i++){
-    const tau = new TauTetromino(2, i)
-    console.log(tau.toString()); 
-    
-    tau.getRightCells().forEach((coord) => {
-        console.log(`row: ${coord.row}, col: ${coord.col}`)
-    })
-}
 
 export default TauTetromino
