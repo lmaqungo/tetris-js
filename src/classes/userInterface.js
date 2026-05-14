@@ -11,6 +11,7 @@ class UI {
     topShiftMultiplier;
     scoreDisplay;
     levelDisplay;
+    verticalInputActive;
 
     tetromino; 
     gameBoard;
@@ -39,8 +40,8 @@ class UI {
         this.grid.classList.add('outline-2', 'outline-black');
         this.grid.style.position = "relative"
 
-        const stats = document.createElement('div'); 
-        stats.classList.add('bold', 'text-sm')
+        const stats = document.createElement('div');
+        stats.classList.add('bold', 'text-sm');
 
         this.scoreDisplay = document.createElement('p'); 
         this.scoreDisplay.textContent = `Score: ${0}`; 
@@ -88,6 +89,7 @@ class UI {
                 setTimeout(() => {
                     try {
                         document.addEventListener('keydown', this)
+                        document.addEventListener('keyup', this)
                         const animation = setInterval(() =>  {
                             this.shapeContainer.style.top = `${(this.verticalPosition + (this.topShiftMultiplier * -1)) * this.cellSize }px`; 
 
@@ -115,7 +117,9 @@ class UI {
                                         }
                                     )
                                 } else {
-                                    this.verticalPosition += 1; 
+                                    if(!this.verticalInputActive){
+                                        this.verticalPosition += 1; 
+                                    }
                                 }
                             } 
                             
@@ -141,9 +145,6 @@ class UI {
         }
     }
 
-    tetrominoVerticalAnimation(tetrominoContainer) {
-        return
-    }
 
     calculateShapeContainer() {
         const divs = this.shapeContainer.querySelectorAll('div'); 
@@ -247,7 +248,6 @@ class UI {
         if(e.type === 'keydown'){
             if (!e.repeat) {
                 if(e.key === "ArrowLeft"){
-                    // console.log('left arrow clicked')
                     // checks if we're clicking past the left boundary
                     if(this.horizontalMove > 0) {
                         /* 
@@ -286,10 +286,6 @@ class UI {
                     }
                 } else if (e.key === 'ArrowUp') {
                     
-                    /*
-                    If there are presently filled columns, set the verticalPosition, otherwise pass
-                    */
-                   
                    this.tetromino.rotate();
                    this.calculateLeftShiftMultiplier();
                    this.calculateShapeContainer(); 
@@ -324,10 +320,36 @@ class UI {
                         this.verticalPosition = highestCellRow + (this.topShiftMultiplier * -1) - this.tetromino.shape.length;
                         
                     }
-                }
+                } 
 
                 this.shapeContainer.style.left = `${((this.leftShiftMultiplier * -1) + this.horizontalMove) * this.cellSize }px`;
 
+            } else {
+                if(e.key === 'ArrowDown') {
+                    const nextCellRow = (this.verticalPosition + (this.topShiftMultiplier * -1)) + this.tetromino.shape.length + 1; 
+
+                    if(nextCellRow <= this.rows ){
+                        this.verticalInputActive = true;
+                        const nextCells = []; 
+                        this.tetromino.getBottomCells().forEach((coord) => {
+                            const bottomCell = this.gameBoard.grid[((this.verticalPosition + (this.topShiftMultiplier * -1)) + coord.row + 1)][((this.horizontalMove + (this.leftShiftMultiplier * -1)) + coord.col)];
+                            nextCells.push(bottomCell);
+                        })
+    
+                        const nextFrameCollision = nextCells.some(cell => cell > 0)
+    
+                        if(!nextFrameCollision) {
+                            this.verticalPosition += 1;
+                        }
+
+                    }
+
+                    this.shapeContainer.style.top = `${(this.verticalPosition + (this.topShiftMultiplier * -1)) * this.cellSize }px`; 
+                }
+            }
+        } else if(e.type === 'keyup'){
+            if(e.key === 'ArrowDown'){
+                this.verticalInputActive = false;
             }
         }
     }
