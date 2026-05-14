@@ -24,6 +24,8 @@ The game revolves around these main classes. ```Gameboard``` stores the current 
 
 ## 📷 Demo
 
+[Live site](https://lmaqungo.github.io/tetris-js/)
+
 ![start screen](/public/screenshot1.png)
 ![game screen](/public/screenshot2.png)
 
