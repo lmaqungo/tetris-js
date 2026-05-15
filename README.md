@@ -18,9 +18,9 @@ The game revolves around these main classes. ```Gameboard``` stores the current 
 
 ## 📌 To do
 
-- Levels that increase in difficulty; higher levels must be associated with faster vertical descent.  
-- Fail screen that displays score and level reached, with a 'try again' button that reinitialises the game.  
-- Back button in the main screen that returns to the start screen.
+- [ ] Levels that increase in difficulty; higher levels must be associated with faster vertical descent.  
+- [ ] Fail screen that displays score and level reached, with a 'try again' button that reinitialises the game.  
+- [ ] Back button in the main screen that returns to the start screen.
 
 ## 📷 Demo
 
